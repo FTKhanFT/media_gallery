@@ -4,13 +4,13 @@ part of media_gallery;
 @immutable
 class MediaCollection {
   /// A unique identifier for the collection.
-  final String id;
+  final String? id;
 
   /// The name of the collection.
-  final String name;
+  final String? name;
 
   /// The total number of medias in the collection.
-  final int count;
+  final int? count;
 
   /// Indicates whether this collection contains all medias.
   bool get isAllCollection => id == "__ALL__";
@@ -26,9 +26,9 @@ class MediaCollection {
   /// Pagination can be controlled out of [skip] (defaults to `0`) and
   /// [take] (defaults to `<total>`).
   Future<MediaPage> getMedias({
-    MediaType mediaType,
-    int skip,
-    int take,
+    MediaType? mediaType,
+    int? skip,
+    int? take,
   }) {
     return MediaGallery._listMedias(
       collection: this,
@@ -41,13 +41,13 @@ class MediaCollection {
   /// Get thumbnail data for this collection.
   ///
   /// It will display the lastly taken media thumbnail.
-  Future<List<int>> getThumbnail({
-    int width,
-    int height,
+  Future<List<int>?> getThumbnail({
+    int? width,
+    int? height,
     bool highQuality = false,
   }) {
     return MediaGallery._getCollectionThumbnail(
-      collectionId: id,
+      collectionId: id!,
       width: width,
       height: height,
       highQuality: highQuality,
@@ -64,19 +64,19 @@ class MediaPage {
   final MediaType mediaType;
 
   /// The start offset for those medias.
-  final int start;
+  final int? start;
 
   /// The total number of items.
-  final int total;
+  final int? total;
 
   /// The current items.
-  final List<Media> items;
+  final List<Media>? items;
 
   /// The end index in the collection.
-  int get end => start + items.length;
+  int get end => start! + items!.length;
 
   ///Indicates whether this page is the last in the collection.
-  bool get isLast => end >= total;
+  bool get isLast => end >= total!;
 
   /// Creates a range of media from platform channel protocol.
   MediaPage.fromJson(this.collection, this.mediaType, dynamic json)
@@ -91,7 +91,7 @@ class MediaPage {
       collection: collection,
       mediaType: mediaType,
       skip: end,
-      take: items.length,
+      take: items!.length,
     );
   }
 }
@@ -102,16 +102,16 @@ class MediaPage {
 @immutable
 class Media {
   /// A unique identifier for the media.
-  final String id;
+  final String? id;
 
   /// The media type.
   final MediaType mediaType;
 
   /// The media width.
-  final int width;
+  final int? width;
 
   /// The media height.
-  final int height;
+  final int? height;
 
   /// The date at which the photo or video was taken.
   final DateTime creationDate;
@@ -126,13 +126,13 @@ class Media {
             DateTime.fromMillisecondsSinceEpoch(json["creationDate"] * 1000);
 
   /// Get a JPEG thumbnail's data for this media.
-  Future<List<int>> getThumbnail({
-    int width,
-    int height,
+  Future<List<int>?> getThumbnail({
+    int? width,
+    int? height,
     bool highQuality = false,
   }) {
     return MediaGallery._getMediaThumbnail(
-      mediaId: id,
+      mediaId: id!,
       width: width,
       height: height,
       mediaType: mediaType,
@@ -143,7 +143,7 @@ class Media {
   /// Get the original file.
   Future<File> getFile() {
     return MediaGallery._getMediaFile(
-      mediaId: id,
+      mediaId: id!,
       mediaType: mediaType,
     );
   }

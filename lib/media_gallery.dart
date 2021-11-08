@@ -2,6 +2,7 @@ library media_gallery;
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -19,10 +20,9 @@ class MediaGallery {
 
   /// List all available media gallery collections and counts number of
   /// items of [mediaTypes].
-  static Future<List<dynamic>> listMediaCollections({
-    @required List<MediaType> mediaTypes,
+  static Future<List<dynamic>?> listMediaCollections({
+    required List<MediaType> mediaTypes,
   }) async {
-    assert(mediaTypes != null);
     final json = await _channel.invokeMethod('listMediaCollections', {
       'mediaTypes': mediaTypes.map((x) => _mediaTypeToJson(x)).toList(),
     });
@@ -32,10 +32,10 @@ class MediaGallery {
   }
 
   static Future<MediaPage> _listMedias({
-    @required MediaCollection collection,
-    MediaType mediaType,
-    int skip,
-    int take,
+    required MediaCollection collection,
+    MediaType? mediaType,
+    int? skip,
+    int? take,
   }) async {
     assert(collection.id != null);
     mediaType ??= MediaType.image;
@@ -48,14 +48,13 @@ class MediaGallery {
     return MediaPage.fromJson(collection, mediaType, json);
   }
 
-  static Future<List<int>> _getMediaThumbnail({
-    @required String mediaId,
-    MediaType mediaType,
-    int width,
-    int height,
-    bool highQuality,
+  static Future<List<int>?> _getMediaThumbnail({
+    required String mediaId,
+    MediaType? mediaType,
+    int? width,
+    int? height,
+    bool? highQuality,
   }) async {
-    assert(mediaId != null);
     final bytes = await _channel.invokeMethod('getMediaThumbnail', {
       'mediaId': mediaId,
       'width': width,
@@ -66,13 +65,12 @@ class MediaGallery {
     return bytes;
   }
 
-  static Future<List<int>> _getCollectionThumbnail({
-    @required String collectionId,
-    int width,
-    int height,
-    bool highQuality,
+  static Future<List<int>?> _getCollectionThumbnail({
+    required String collectionId,
+    int? width,
+    int? height,
+    bool? highQuality,
   }) async {
-    assert(collectionId != null);
     final bytes = await _channel.invokeMethod('getCollectionThumbnail', {
       'collectionId': collectionId,
       'width': width,
@@ -83,11 +81,8 @@ class MediaGallery {
   }
 
   static Future<File> _getMediaFile({
-    @required String mediaId,
-    MediaType mediaType,
-    int width,
-    int height,
-    bool highQuality,
+    required String mediaId,
+    MediaType? mediaType,
   }) async {
     assert(mediaId != null);
     mediaType ??= MediaType.image;
